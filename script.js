@@ -3,89 +3,96 @@ const ctx = canvas.getContext("2d");
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
 const resultInput = document.getElementById("result");
+const num1Input = document.getElementById("num1");
+const num2Input = document.getElementById("num2");
 
-let num1Input = document.getElementById("num1");
-let num2Input = document.getElementById("num2");
-
+// Fungsi menggambar garis bilangan
 function drawNumberLine(center = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const step = 40;
   const visibleRange = 10;
   const zeroX = canvas.width / 2 - center * step;
 
-  // Garis utama
+  // garis utama
   ctx.beginPath();
-  ctx.moveTo(50, 130);
-  ctx.lineTo(canvas.width - 50, 130);
+  ctx.moveTo(50, 150);
+  ctx.lineTo(canvas.width - 50, 150);
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Tanda dan angka
+  // titik & angka
   for (let i = -visibleRange; i <= visibleRange; i++) {
     const x = zeroX + i * step;
     ctx.beginPath();
-    ctx.moveTo(x, 125);
-    ctx.lineTo(x, 135);
+    ctx.moveTo(x, 145);
+    ctx.lineTo(x, 155);
     ctx.stroke();
 
     ctx.fillStyle = "black";
     ctx.font = "14px Poppins";
-    ctx.fillText(i + center, x - 5, 150);
+    ctx.fillText(i + center, x - 5, 175);
   }
 
-  // Panah kiri dan kanan
+  // panah ujung kanan
   ctx.beginPath();
-  ctx.moveTo(canvas.width - 60, 130);
-  ctx.lineTo(canvas.width - 50, 125);
-  ctx.lineTo(canvas.width - 50, 135);
+  ctx.moveTo(canvas.width - 60, 150);
+  ctx.lineTo(canvas.width - 50, 145);
+  ctx.lineTo(canvas.width - 50, 155);
   ctx.fill();
 
+  // panah ujung kiri
   ctx.beginPath();
-  ctx.moveTo(60, 130);
-  ctx.lineTo(50, 125);
-  ctx.lineTo(50, 135);
+  ctx.moveTo(60, 150);
+  ctx.lineTo(50, 145);
+  ctx.lineTo(50, 155);
   ctx.fill();
 }
 
-function drawDashedArrow(from, to, color, label) {
+// Gambar garis putus-putus dengan panah dan label
+function drawDashedArrow(from, to, color, label, level = 0) {
   const step = 40;
   const zeroX = canvas.width / 2;
-  const y = 90;
+  const y = 120 - level * 20;
 
   ctx.strokeStyle = color;
-  ctx.setLineDash([6, 4]);
+  ctx.setLineDash([6, 5]);
+  ctx.lineWidth = 2;
+
+  // garis putus-putus
   ctx.beginPath();
   ctx.moveTo(zeroX + from * step, y);
   ctx.lineTo(zeroX + to * step, y);
   ctx.stroke();
-  ctx.setLineDash([]);
 
-  // Panah di ujung
+  // panah di ujung
+  ctx.setLineDash([]);
   const arrowDir = to > from ? 1 : -1;
+  const arrowX = zeroX + to * step;
   ctx.beginPath();
-  ctx.moveTo(zeroX + to * step, y);
-  ctx.lineTo(zeroX + to * step - 8 * arrowDir, y - 5);
-  ctx.lineTo(zeroX + to * step - 8 * arrowDir, y + 5);
-  ctx.closePath();
+  ctx.moveTo(arrowX, y);
+  ctx.lineTo(arrowX - 10 * arrowDir, y - 5);
+  ctx.lineTo(arrowX - 10 * arrowDir, y + 5);
   ctx.fillStyle = color;
   ctx.fill();
 
-  // Label di atas garis
+  // label di atas garis
   ctx.fillStyle = color;
   ctx.font = "16px Poppins";
-  ctx.fillText(label, zeroX + ((from + to) / 2) * step - 5, y - 10);
+  ctx.fillText(label, zeroX + ((from + to) / 2) * step - 8, y - 5);
 }
 
+// Gambar bulatan kecil
 function drawCircle(value, color) {
   const step = 40;
   const zeroX = canvas.width / 2;
   ctx.beginPath();
-  ctx.arc(zeroX + value * step, 130, 5, 0, Math.PI * 2);
+  ctx.arc(zeroX + value * step, 150, 5, 0, Math.PI * 2);
   ctx.fillStyle = color;
   ctx.fill();
 }
 
+// Update tampilan
 function update() {
   const num1 = parseInt(num1Input.value);
   const num2 = parseInt(num2Input.value);
@@ -95,24 +102,26 @@ function update() {
   resultInput.value = result;
 
   let center = 0;
+  // Geser agar hasil tetap terlihat
   if (result > 10) center = result - 10;
   else if (result < -10) center = result + 10;
 
   drawNumberLine(center);
 
-  // Bilangan pertama
-  drawDashedArrow(0, num1, "gold", num1);
+  // Garis & panah bilangan pertama (kuning)
+  drawDashedArrow(0, num1, "gold", num1, 0);
   drawCircle(num1, "gold");
 
-  // Bilangan kedua (tetap di atas bilangan pertama)
-  drawDashedArrow(num1, num1 + num2, "limegreen", num2);
+  // Garis & panah bilangan kedua (hijau), sedikit di atas agar tidak menabrak
+  drawDashedArrow(num1, num1 + num2, "limegreen", num2, 1);
   drawCircle(num1 + num2, "limegreen");
 
-  // Hasil
+  // Bulatan merah untuk hasil
   drawCircle(result, "red");
 }
 
 startBtn.onclick = update;
+
 resetBtn.onclick = () => {
   num1Input.value = "";
   num2Input.value = "";
@@ -120,4 +129,5 @@ resetBtn.onclick = () => {
   drawNumberLine(0);
 };
 
+// tampil awal
 drawNumberLine(0);
