@@ -1,63 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Operasi Penjumlahan Bilangan Bulat</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      text-align: center;
+      background: linear-gradient(to bottom right, #b5f5b5, #e6ffe6);
+      margin: 0;
+      padding: 0;
+    }
 
-  <h1>Operasi Penjumlahan Bilangan Bulat</h1>
+    h1 {
+      margin-top: 30px;
+      font-size: 28px;
+      color: #145a14;
+    }
 
-  <div class="input-container">
-    <div>
-      <label>Bilangan 1</label><br>
-      <input type="number" id="num1" min="-15" max="15" value="0">
-    </div>
-    <div class="plus">+</div>
-    <div>
-      <label>Bilangan 2</label><br>
-      <input type="number" id="num2" min="-15" max="15" value="0">
-    </div>
-  </div>
+    .input-container {
+      margin: 20px 0;
+      font-size: 18px;
+    }
 
-  <div class="button-container">
-    <button id="startBtn">Mulai</button>
-    <button id="resetBtn">Refresh</button>
-  </div>
+    input {
+      width: 50px;
+      text-align: center;
+      padding: 5px;
+      font-size: 18px;
+      border-radius: 6px;
+      border: 1px solid #145a14;
+    }
 
-  <div class="number-line" id="numberLine">
-    <svg width="600" height="150">
-      <defs>
-        <marker id="arrowYellow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L9,3 z" fill="yellow"></path>
-        </marker>
-        <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L9,3 z" fill="limegreen"></path>
-        </marker>
-      </defs>
-      <line id="line1" x1="0" y1="60" x2="0" y2="60" stroke="yellow" stroke-dasharray="5,5" marker-end="url(#arrowYellow)"/>
-      <line id="line2" x1="0" y1="40" x2="0" y2="40" stroke="limegreen" stroke-dasharray="5,5" marker-end="url(#arrowGreen)"/>
-    </svg>
-  </div>
-
-  <div class="result-box" id="resultBox">
-    Bilangan 1 + Bilangan 2 = 0
-  </div>
-
-  <div class="explanation">
-    🌟 <b>Angka Pertama</b><br>
-    Menentukan titik awal pada garis bilangan.<br>
-    • Jika positif (+), bergerak ke kanan dari 0<br>
-    • Jika negatif (-), bergerak ke kiri dari 0
-    <br><br>
-    💜 <b>Angka Kedua</b><br>
-    Menentukan langkah berikutnya:<br>
-    • Jika positif (+), bergerak ke kanan dari angka pertama<br>
-    • Jika negatif (-), bergerak ke kiri dari angka pertama
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+    button {
+      background-color: #34a853;
+      border: none
