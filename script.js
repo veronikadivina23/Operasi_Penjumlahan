@@ -9,13 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const SVG_HEIGHT = 300;
     const CENTER_Y = SVG_HEIGHT / 2;
     const UNIT_LENGTH = 40; 
-    const BASE_ANIMATION_DURATION = 800; // Durasi dasar per lompatan/langkah (lebih lambat)
-    const PAUSE_BETWEEN_STEPS = 1000; // Jeda antar animasi A dan B
+    
+    // Waktu Gerak Token dari Angka X ke Angka Y
+    const ANIMATION_DURATION = 180; 
+    
+    // Waktu Berhenti (JEDA) di setiap Angka
+    const PAUSE_PER_STEP = 120; 
+    
+    // JEDA ANTARA ANIMASI A DAN B
+    const PAUSE_BETWEEN_JUMPS = 500; 
     
     const COLOR_A = '#ff5757'; // Merah
     const COLOR_B = '#4caf50'; // Hijau
 
-    // --- Fungsi Utilitas SVG ---
+    // --- Fungsi Utilitas SVG (Tetap Sama) ---
     const createSVGElement = (tag, attributes) => {
         const element = document.createElementNS('http://www.w3.org/2000/svg', tag);
         for (const key in attributes) {
@@ -54,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         defs.appendChild(markerB);
     };
 
-
     const drawNumberLine = (minVal, maxVal) => {
         svg.innerHTML = '';
         defineArrowMarkers();
@@ -84,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Fungsi Animasi Lompatan ---
+
+    // --- Fungsi Animasi Lompatan (LOMPATAN DISKRIT) ---
 
     const animateLompatan = (value, startPos, colorClass, labelText, labelYOffset, delay) => {
         return new Promise(resolve => {
@@ -92,14 +99,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const direction = Math.sign(value);
             let currentUnit = startPos;
             const arrowId = colorClass.includes('A') ? 'url(#arrowA)' : 'url(#arrowB)';
-            const labelColor = colorClass.includes('A') ? COLOR_A : COLOR_B;
+            const stepColor = colorClass.includes('A') ? COLOR_A : COLOR_B;
+            const labelColor = stepColor;
+            
+            const startPixelTotal = startPos * UNIT_LENGTH;
+            const endPixelTotal = (startPos + value) * UNIT_LENGTH;
 
             if (value === 0) {
-                // Penanganan nilai 0
                 setTimeout(() => {
                     const midPixel = startPos * UNIT_LENGTH;
                      svg.appendChild(createSVGElement('text', {
-                        x: midPixel, y: CENTER_Y + labelYOffset - 15,
+                        x: midPixel, y: CENTER_Y + labelYOffset - 10, 
                         'text-anchor': 'middle', fill: labelColor,
                         class: 'label-text'
                     })).textContent = labelText;
@@ -108,33 +118,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Kecepatan langkah disamakan untuk A dan B: durasi total / jumlah langkah
-            const stepDuration = BASE_ANIMATION_DURATION / steps; 
-            
-            // Tampilkan Label Arah di awal
-            const startPixelLabel = startPos * UNIT_LENGTH;
-            const endPixelLabel = (startPos + value) * UNIT_LENGTH;
-            const midPixelLabel = (startPixelLabel + endPixelLabel) / 2;
+            // Garis Total Permanen (untuk panah)
+            const totalLine = createSVGElement('line', {
+                x1: startPixelTotal, y1: CENTER_Y + labelYOffset,
+                x2: endPixelTotal, y2: CENTER_Y + labelYOffset,
+                class: colorClass, 
+                'stroke-dasharray': '8, 4', 
+                'stroke-width': 4,
+                'marker-end': arrowId,
+                'stroke-opacity': 1, 
+            });
+            svg.appendChild(totalLine);
+
+            // Tampilkan Label Arah
+            const midPixelLabel = (startPixelTotal + endPixelTotal) / 2;
 
             setTimeout(() => {
                 svg.appendChild(createSVGElement('text', {
-                    x: midPixelLabel, y: CENTER_Y + labelYOffset - 15,
+                    x: midPixelLabel, y: CENTER_Y + labelYOffset - 10,
                     'text-anchor': 'middle', fill: labelColor,
                     class: 'label-text'
                 })).textContent = labelText;
             }, delay);
 
             let stepCount = 0;
-            const intervalId = setInterval(() => {
+            
+            // Loop animasi menggunakan setTimeout berantai
+            const loopAnimationFixed = () => {
+                // Pengecekan sebelum langkah dimulai
                 if (stepCount >= steps) {
-                    clearInterval(intervalId);
-                    
-                    // Tambahkan panah di ujung akhir garis putus-putus
-                    const finalLine = svg.lastChild;
-                    if (finalLine && finalLine.tagName === 'line') {
-                         finalLine.setAttribute('marker-end', arrowId);
-                    }
-                    
                     resolve();
                     return;
                 }
@@ -143,37 +155,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentUnit += direction;
                 const nextPixel = currentUnit * UNIT_LENGTH;
 
-                // Hapus panah dari garis putus-putus sebelumnya (untuk animasi)
-                const previousLine = svg.lastChild;
-                if (previousLine && previousLine.tagName === 'line') {
-                    previousLine.removeAttribute('marker-end');
-                }
-
-                // 1. Gambar Jejak (Garis Putus-putus)
-                const line = createSVGElement('line', {
-                    x1: prevPixel, y1: CENTER_Y + labelYOffset,
-                    x2: nextPixel, y2: CENTER_Y + labelYOffset,
-                    class: colorClass
-                });
-                svg.appendChild(line);
-                
-                // 2. Gambar Bulatan Melangkah (Token)
+                // 1. Gambar Bulatan Bergerak (TOKEN)
                 const dot = createSVGElement('circle', {
-                    cx: prevPixel, cy: CENTER_Y + labelYOffset,
-                    r: 6, fill: line.getAttribute('stroke')
+                    cx: prevPixel, 
+                    cy: CENTER_Y + labelYOffset,
+                    r: 6, 
+                    fill: stepColor 
                 });
                 svg.appendChild(dot);
                 
-                // Animasi pergerakan token
+                // 2. Animasi pergerakan token
                 dot.animate(
                     [{ cx: prevPixel }, { cx: nextPixel }],
-                    { duration: stepDuration, easing: 'ease-in-out' }
+                    { 
+                        duration: ANIMATION_DURATION, // Waktu Gerak
+                        easing: 'linear', 
+                        fill: 'forwards' 
+                    }
                 );
 
-                setTimeout(() => dot.remove(), stepDuration);
+                // LOGIKA BERHENTI TEPAT DI ANGKA:
+                // Token dihapus setelah waktu gerak (ANIMATION_DURATION)
+                // Langkah berikutnya dipanggil setelah waktu jeda (PAUSE_PER_STEP)
                 
-                stepCount++;
-            }, stepDuration + delay);
+                setTimeout(() => {
+                    // Hapus token setelah mencapai titik akhir langkah
+                    dot.remove();
+                    
+                    // Panggil langkah berikutnya setelah JEDA
+                    stepCount++;
+                    setTimeout(loopAnimationFixed, PAUSE_PER_STEP); 
+                    
+                }, ANIMATION_DURATION); 
+            };
+
+            // Mulai loop setelah delay awal
+            setTimeout(loopAnimationFixed, delay);
         });
     };
 
@@ -190,39 +207,26 @@ document.addEventListener('DOMContentLoaded', () => {
         let A = parseInt(inputA.value);
         let B = parseInt(inputB.value);
 
-        if (isNaN(A)) A = 0;
-        if (isNaN(B)) B = 0;
+        if (isNaN(A)) A = 0; if (isNaN(B)) B = 0;
+        A = Math.max(-15, Math.min(15, A)); B = Math.max(-15, Math.min(15, B));
+        inputA.value = A; inputB.value = B;
 
-        A = Math.max(-15, Math.min(15, A));
-        B = Math.max(-15, Math.min(15, B));
-        
-        inputA.value = A;
-        inputB.value = B;
-
-        const C = A + B;
-        resultC.value = C;
-        
+        const C = A + B; resultC.value = C;
         startButton.disabled = true;
 
         const allVals = [0, A, C];
         const minValGlobal = Math.min(...allVals) - 2;
         const maxValGlobal = Math.max(...allVals) + 2;
-
         drawNumberLine(minValGlobal, maxValGlobal);
 
-        // OFFSET VERTICAL
-        const OFFSET_A = -30;
-        const OFFSET_B = -60;
+        // OFFSET (A: -25, B: -60)
+        const OFFSET_A = -25;
+        const OFFSET_B = -60; 
 
-        // 3. Animasi Lompatan A (LABEL DENGAN TANDA KURUNG)
         await animateLompatan(A, 0, 'jump-line-A', `(${A})`, OFFSET_A, 0);
+        await animateLompatan(B, A, 'jump-line-B', `(${B})`, OFFSET_B, PAUSE_BETWEEN_JUMPS);
 
-        // 4. Animasi Lompatan B (HANYA BILANGAN KEDUA, TANPA (+))
-        // Perhatikan `B` sebagai labelText, bukan `+ (B)`
-        await animateLompatan(B, A, 'jump-line-B', `(${B})`, OFFSET_B, PAUSE_BETWEEN_STEPS);
-
-        // 5. Tampilkan Hasil
-        drawFinalResult(C);
+        drawFinalResult(C); 
         startButton.disabled = false;
     };
 
@@ -232,13 +236,11 @@ document.addEventListener('DOMContentLoaded', () => {
         inputB.value = '';
         resultC.value = '';
         startButton.disabled = false;
-        
         drawNumberLine(-10, 10);
     };
 
     startButton.addEventListener('click', startAnimation);
     refreshButton.addEventListener('click', reset);
 
-    // Inisialisasi awal saat halaman dimuat
     reset(); 
 });
