@@ -44,26 +44,37 @@ h1 {
     font-weight: bold;
 }
 
-.input-bilangan, .result-box {
+.input-bilangan {
     padding: 10px 15px;
     border: 2px solid #a3b3ff;
     border-radius: 10px;
-    width: 80px;
+    width: 80px; /* Lebar Input */
     font-size: 1.2em;
     text-align: center;
     background: #fdfdff; 
 }
 
+/* Penyesuaian Kotak Hasil agar Lurus */
 .result-box {
+    width: 80px; 
+    padding: 10px 15px;
+    border: 2px solid #a3b3ff;
+    border-radius: 10px;
+    font-size: 1.2em;
+    text-align: center;
     background: #f0f8ff;
     font-weight: bold;
     color: #333;
+    /* Margin agar sejajar dengan input setelah label */
+    margin-top: 25px; 
 }
 
 .operator-fixed, .equals-sign {
     font-size: 1.5em;
     font-weight: bold;
     color: #6a0dad;
+    /* Margin agar sejajar */
+    margin-top: 25px; 
 }
 
 .actions {
@@ -123,14 +134,14 @@ h1 {
     fill: #333;
 }
 
-/* WARNA: Merah */
+/* WARNA: Merah (Bilangan Pertama) */
 .jump-line-A {
     stroke: #ff5757; 
     stroke-width: 4;
     stroke-dasharray: 8, 4;
 }
 
-/* WARNA: Hijau */
+/* WARNA: Hijau (Bilangan Kedua) */
 .jump-line-B {
     stroke: #4caf50; 
     stroke-width: 4;
@@ -141,15 +152,4 @@ h1 {
     fill: #6a0dad;
     stroke: #ffd700;
     stroke-width: 3;
-    filter: drop-shadow(0 0 5px #ffd700);
-}
-
-.label-text {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-/* DEFENISI MARKER PANAH */
-.arrowhead {
-    fill: currentColor; 
-}
+    filter
