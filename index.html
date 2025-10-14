@@ -22,8 +22,42 @@
     </div>
   </div>
 
+  <div class="button-container">
+    <button id="startBtn">Mulai</button>
+    <button id="resetBtn">Refresh</button>
+  </div>
+
   <div class="number-line" id="numberLine">
     <svg width="600" height="150">
       <defs>
         <marker id="arrowYellow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L9,3 z" f
+          <path d="M0,0 L0,6 L9,3 z" fill="yellow"></path>
+        </marker>
+        <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L9,3 z" fill="limegreen"></path>
+        </marker>
+      </defs>
+      <line id="line1" x1="0" y1="60" x2="0" y2="60" stroke="yellow" stroke-dasharray="5,5" marker-end="url(#arrowYellow)"/>
+      <line id="line2" x1="0" y1="40" x2="0" y2="40" stroke="limegreen" stroke-dasharray="5,5" marker-end="url(#arrowGreen)"/>
+    </svg>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    Bilangan 1 + Bilangan 2 = 0
+  </div>
+
+  <div class="explanation">
+    🌟 <b>Angka Pertama</b><br>
+    Menentukan titik awal pada garis bilangan.<br>
+    • Jika positif (+), bergerak ke kanan dari 0<br>
+    • Jika negatif (-), bergerak ke kiri dari 0
+    <br><br>
+    💜 <b>Angka Kedua</b><br>
+    Menentukan langkah berikutnya:<br>
+    • Jika positif (+), bergerak ke kanan dari angka pertama<br>
+    • Jika negatif (-), bergerak ke kiri dari angka pertama
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
