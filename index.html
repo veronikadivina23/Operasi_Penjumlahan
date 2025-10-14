@@ -7,26 +7,22 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🎯 Operasi Penjumlahan Bilangan Bulat</h1>
-
-  <div class="input-container">
-    <label>Bilangan Pertama:</label>
-    <input type="number" id="bil1" min="-20" max="20" placeholder="">
-    <span class="tanda">+</span>
-    <label>Bilangan Kedua:</label>
-    <input type="number" id="bil2" min="-20" max="20" placeholder="">
+  <h1>Operasi Penjumlahan Bilangan Bulat</h1>
+  <div class="input-area">
+    <input id="num1" type="number" placeholder="Bilangan 1" min="-10" max="10" />
+    <span class="highlight"> + </span>
+    <input id="num2" type="number" placeholder="Bilangan 2" min="-10" max="10" />
+    <button id="startBtn">Mulai</button>
+    <button id="resetBtn">Refresh</button>
   </div>
 
-  <div class="btn-container">
-    <button id="mulai">Mulai</button>
-    <button id="refresh">Refresh</button>
+  <div class="number-line-container">
+    <canvas id="numberLine" width="900" height="200"></canvas>
   </div>
 
-  <div class="garis-container">
-    <canvas id="garisBilangan" width="1000" height="250"></canvas>
+  <div class="result-box">
+    Bilangan 1 + Bilangan 2 = <span id="result"></span>
   </div>
-
-  <div class="hasil" id="hasil"></div>
 
   <script src="script.js"></script>
 </body>
