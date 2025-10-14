@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- Fungsi Animasi Lompatan (LOMPATAN DISKRIT) ---
+    // --- Fungsi Animasi Lompatan (LOMPATAN & GARIS BERSAMAAN) ---
 
     const animateLompatan = (value, startPos, colorClass, labelText, labelYOffset, delay) => {
         return new Promise(resolve => {
@@ -118,18 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Garis Total Permanen (untuk panah)
-            const totalLine = createSVGElement('line', {
-                x1: startPixelTotal, y1: CENTER_Y + labelYOffset,
-                x2: endPixelTotal, y2: CENTER_Y + labelYOffset,
-                class: colorClass, 
-                'stroke-dasharray': '8, 4', 
-                'stroke-width': 4,
-                'marker-end': arrowId,
-                'stroke-opacity': 1, 
-            });
-            svg.appendChild(totalLine);
-
             // Tampilkan Label Arah
             const midPixelLabel = (startPixelTotal + endPixelTotal) / 2;
 
@@ -142,11 +130,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }, delay);
 
             let stepCount = 0;
-            
+            let lastLine = null; // Menyimpan garis langkah terakhir
+
             // Loop animasi menggunakan setTimeout berantai
             const loopAnimationFixed = () => {
-                // Pengecekan sebelum langkah dimulai
+                // 1. Pengecekan sebelum langkah dimulai
                 if (stepCount >= steps) {
+                    // Setelah semua langkah selesai, tambahkan panah ke garis terakhir
+                    if (lastLine) {
+                         lastLine.setAttribute('marker-end', arrowId);
+                    }
                     resolve();
                     return;
                 }
@@ -155,7 +148,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentUnit += direction;
                 const nextPixel = currentUnit * UNIT_LENGTH;
 
-                // 1. Gambar Bulatan Bergerak (TOKEN)
+                // 2. Gambar Garis Langkah (Tercipta Bersamaan dengan Token)
+                const line = createSVGElement('line', {
+                    x1: prevPixel, y1: CENTER_Y + labelYOffset,
+                    x2: nextPixel, y2: CENTER_Y + labelYOffset,
+                    class: colorClass, 
+                    'stroke-dasharray': '8, 4', 
+                    'stroke-width': 4,
+                    'stroke-opacity': 1, 
+                });
+                svg.appendChild(line);
+                lastLine = line;
+
+                // 3. Gambar Bulatan Bergerak (TOKEN)
                 const dot = createSVGElement('circle', {
                     cx: prevPixel, 
                     cy: CENTER_Y + labelYOffset,
@@ -164,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 svg.appendChild(dot);
                 
-                // 2. Animasi pergerakan token
+                // 4. Animasi pergerakan token
                 dot.animate(
                     [{ cx: prevPixel }, { cx: nextPixel }],
                     { 
@@ -174,10 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 );
 
-                // LOGIKA BERHENTI TEPAT DI ANGKA:
-                // Token dihapus setelah waktu gerak (ANIMATION_DURATION)
-                // Langkah berikutnya dipanggil setelah waktu jeda (PAUSE_PER_STEP)
-                
+                // 5. Logika Berhenti dan Jeda
                 setTimeout(() => {
                     // Hapus token setelah mencapai titik akhir langkah
                     dot.remove();
