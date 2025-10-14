@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Operasi Penjumlahan Bilangan Bulat</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Operasi Penjumlahan Bilangan Bulat</h1>
 
   <div class="input-container">
-    Bilangan Pertama: 
-    <input type="number" id="bil1" value="2" min="-15" max="15"> +
-    Bilangan Kedua: 
-    <input type="number" id="bil2" value="3" min="-15" max="15">
-    <br>
-    <button id="mulaiBtn">Mulai</button>
-    <button onclick="location.reload()">Refresh</button>
+    <label>Bilangan Pertama:</label>
+    <input type="number" id="bil1" min="-15" max="15" />
+    <span> + </span>
+    <label>Bilangan Kedua:</label>
+    <input type="number" id="bil2" min="-15" max="15" />
   </div>
 
-  <canvas id="garisBilangan" width="800" height="220"></canvas>
+  <div class="btn-container">
+    <button id="mulai">Mulai</button>
+    <button id="refresh">Refresh</button>
+  </div>
+
+  <div class="garis-container">
+    <canvas id="garisBilangan" width="1000" height="200"></canvas>
+  </div>
 
   <div class="hasil" id="hasil"></div>
 
-  <div class="petunjuk">
-    <p>🌟 <b>Angka Pertama</b><br>
-    Menentukan titik awal pada garis bilangan.<br>
-    • Jika positif (+), bergerak ke kanan dari 0<br>
-    • Jika negatif (-), bergerak ke kiri dari 0</p>
+  <script src="script.js"></script>
+</body>
+</html>
