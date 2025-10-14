@@ -1,41 +1,29 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operasi Penjumlahan Bilangan Bulat</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operasi Penjumlahan Bilangan Bulat</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>Operasi Penjumlahan Bilangan Bulat</h2>
 
-  <div id="input-container">
-    <div class="number-input">
-      <label>Bilangan Pertama</label>
-      <input type="number" id="num1" min="-15" max="15">
+  <h1>Operasi Penjumlahan Bilangan Bulat</h1>
+
+  <div class="input-container">
+    <div>
+      <label>Bilangan 1</label><br>
+      <input type="number" id="num1" min="-15" max="15" value="0">
     </div>
-    <div class="operation">+</div>
-    <div class="number-input">
-      <label>Bilangan Kedua</label>
-      <input type="number" id="num2" min="-15" max="15">
+    <div class="plus">+</div>
+    <div>
+      <label>Bilangan 2</label><br>
+      <input type="number" id="num2" min="-15" max="15" value="0">
     </div>
   </div>
 
-  <div id="button-container">
-    <button id="startBtn">Mulai</button>
-    <button id="resetBtn">Refresh</button>
-  </div>
-
-  <div id="container" style="position:relative; width:900px; height:300px; margin:0 auto;">
-    <canvas id="canvasLines" width="900" height="300" style="position:absolute; left:0; top:0; z-index:1;"></canvas>
-    <canvas id="canvasAnim" width="900" height="300" style="position:absolute; left:0; top:0; z-index:2;"></canvas>
-  </div>
-
-  <div id="result-box"></div>
-
-  <!-- Pop sound (harus ada file pop.mp3 di folder yang sama) -->
-  <audio id="popAudio" src="pop.mp3" preload="auto"></audio>
-
-  <script src="script.js"></script>
-</body>
-</html>
+  <div class="number-line" id="numberLine">
+    <svg width="600" height="150">
+      <defs>
+        <marker id="arrowYellow" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L9,3 z" f
