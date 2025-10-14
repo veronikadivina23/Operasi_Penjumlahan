@@ -4,35 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Operasi Penjumlahan Bilangan Bulat</title>
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      text-align: center;
-      background: linear-gradient(to bottom right, #b5f5b5, #e6ffe6);
-      margin: 0;
-      padding: 0;
-    }
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Operasi Penjumlahan Bilangan Bulat</h1>
 
-    h1 {
-      margin-top: 30px;
-      font-size: 28px;
-      color: #145a14;
-    }
+  <div class="input-container">
+    Bilangan Pertama: 
+    <input type="number" id="bil1" value="2" min="-15" max="15"> +
+    Bilangan Kedua: 
+    <input type="number" id="bil2" value="3" min="-15" max="15">
+    <br>
+    <button id="mulaiBtn">Mulai</button>
+    <button onclick="location.reload()">Refresh</button>
+  </div>
 
-    .input-container {
-      margin: 20px 0;
-      font-size: 18px;
-    }
+  <canvas id="garisBilangan" width="800" height="220"></canvas>
 
-    input {
-      width: 50px;
-      text-align: center;
-      padding: 5px;
-      font-size: 18px;
-      border-radius: 6px;
-      border: 1px solid #145a14;
-    }
+  <div class="hasil" id="hasil"></div>
 
-    button {
-      background-color: #34a853;
-      border: none
+  <div class="petunjuk">
+    <p>🌟 <b>Angka Pertama</b><br>
+    Menentukan titik awal pada garis bilangan.<br>
+    • Jika positif (+), bergerak ke kanan dari 0<br>
+    • Jika negatif (-), bergerak ke kiri dari 0</p>
