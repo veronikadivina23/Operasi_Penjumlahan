@@ -1,23 +1,25 @@
-// canvas
+// Canvas
 const canvasLines = document.getElementById("canvasLines");
 const ctxLines = canvasLines.getContext("2d");
 const canvasAnim = document.getElementById("canvasAnim");
 const ctxAnim = canvasAnim.getContext("2d");
 
-// elemen
+// Elemen
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
 const popAudio = document.getElementById("popAudio");
 const resultBox = document.getElementById("result-box");
 
+// Variabel
 let viewMin = -10;
 let viewMax = 10;
 let step = 40;
 
-// gambar garis bilangan
+// Gambar garis bilangan
 function drawNumberLine(min, max) {
   ctxLines.clearRect(0, 0, canvasLines.width, canvasLines.height);
 
+  // garis utama
   ctxLines.beginPath();
   ctxLines.moveTo(50, 150);
   ctxLines.lineTo(850, 150);
@@ -27,6 +29,7 @@ function drawNumberLine(min, max) {
 
   for (let i = min; i <= max; i++) {
     const x = 50 + (i - min) * step;
+
     // garis kecil
     ctxLines.beginPath();
     ctxLines.moveTo(x, 145);
@@ -40,7 +43,7 @@ function drawNumberLine(min, max) {
   }
 }
 
-// garis putus-putus
+// Garis putus-putus
 function drawDashedLine(start, end, color, offsetY, label) {
   const xStart = 50 + (start - viewMin) * step;
   const xEnd = 50 + (end - viewMin) * step;
@@ -69,14 +72,14 @@ function drawDashedLine(start, end, color, offsetY, label) {
   ctxLines.fillText(label, (xStart + xEnd)/2, 150 - offsetY - 5);
 }
 
-// bunyi pop
+// Bunyi pop
 function playPop() {
   const sound = popAudio.cloneNode();
   sound.volume = 0.4;
   sound.play().catch(()=>{});
 }
 
-// animasi lompat
+// Animasi lompat
 function animateSteps(start, end, color, offsetY, callback) {
   let current = start;
   const increment = end > start ? 1 : -1;
@@ -104,7 +107,7 @@ function animateSteps(start, end, color, offsetY, callback) {
   stepAnimation();
 }
 
-// bundaran hasil
+// Bundaran hasil
 function drawResultCircle(result) {
   const x = 50 + (result - viewMin) * step;
   ctxAnim.beginPath();
@@ -113,7 +116,7 @@ function drawResultCircle(result) {
   ctxAnim.fill();
 }
 
-// geser view
+// Geser view
 function adjustView(num1, num2) {
   const result = num1 + num2;
   let minVisible = -10;
@@ -126,7 +129,7 @@ function adjustView(num1, num2) {
   viewMax = maxVisible;
 }
 
-// tombol mulai
+// Tombol Mulai
 startBtn.addEventListener("click", () => {
   const num1 = parseInt(document.getElementById("num1").value);
   const num2 = parseInt(document.getElementById("num2").value);
@@ -149,7 +152,7 @@ startBtn.addEventListener("click", () => {
   });
 });
 
-// tombol refresh
+// Tombol Refresh
 resetBtn.addEventListener("click", () => {
   document.getElementById("num1").value = "";
   document.getElementById("num2").value = "";
@@ -160,5 +163,5 @@ resetBtn.addEventListener("click", () => {
   ctxAnim.clearRect(0,0,canvasAnim.width,canvasAnim.height);
 });
 
-// inisialisasi
+// Inisialisasi
 drawNumberLine(viewMin, viewMax);
