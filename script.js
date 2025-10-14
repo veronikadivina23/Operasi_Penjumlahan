@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const CENTER_Y = SVG_HEIGHT / 2;
     const UNIT_LENGTH = 40; 
     
-    // Waktu Gerak Token (DIPERLAMBAT untuk visibilitas)
+    // Waktu Gerak Token dari Angka X ke Angka Y
     const ANIMATION_DURATION = 250; 
     
-    // Waktu Berhenti (DIPERLAMBAT untuk visibilitas)
+    // Waktu Berhenti (JEDA) di setiap Angka
     const PAUSE_PER_STEP = 150; 
     
     // JEDA ANTARA ANIMASI A DAN B
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let markerA = createSVGElement('marker', {
             id: 'arrowA', viewBox: '0 0 10 10', refX: '9', refY: '5',
             markerWidth: ARROW_SIZE, markerHeight: ARROW_SIZE, 
-            orient: 'auto-start-reverse',
+            orient: 'auto-start-reverse', // Untuk panah yang menghadap ke arah garis
         });
         markerA.appendChild(createSVGElement('path', { d: 'M 0 0 L 10 5 L 0 10 z', fill: COLOR_A }));
         defs.appendChild(markerA);
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- Fungsi Animasi Lompatan (LOMPATAN & GARIS BERSAMAAN) ---
+    // --- Fungsi Animasi Lompatan (GARIS TERGAMBAR BERTAHAP) ---
 
     const animateLompatan = (value, startPos, colorClass, labelText, labelYOffset, delay) => {
         return new Promise(resolve => {
@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const startPixelTotal = startPos * UNIT_LENGTH;
             const endPixelTotal = (startPos + value) * UNIT_LENGTH;
+            const totalLineLength = Math.abs(endPixelTotal - startPixelTotal);
 
             if (value === 0) {
                 setTimeout(() => {
@@ -118,6 +119,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // 1. BUAT GARIS LOMPATAN PENUH (awalnya tersembunyi/tidak terang)
+            const jumpPath = createSVGElement('line', {
+                x1: startPixelTotal, y1: CENTER_Y + labelYOffset,
+                x2: endPixelTotal, y2: CENTER_Y + labelYOffset,
+                class: colorClass, 
+                'stroke-width': 4,
+                'stroke-dasharray': totalLineLength + ' ' + totalLineLength, // Kunci animasi menggambar
+                'stroke-dashoffset': totalLineLength, // Mulai tersembunyi
+                'stroke-opacity': 1, 
+            });
+            svg.appendChild(jumpPath);
+
             // Tampilkan Label Arah
             const midPixelLabel = (startPixelTotal + endPixelTotal) / 2;
 
@@ -130,42 +143,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }, delay);
 
             let stepCount = 0;
-            let lastLine = null; // Menyimpan garis langkah terakhir
+            let animatedLineLength = 0; // Untuk melacak panjang garis yang sudah "tergambar"
 
             // Loop animasi menggunakan setTimeout berantai
             const loopAnimationFixed = () => {
                 // 1. Pengecekan sebelum langkah dimulai
                 if (stepCount >= steps) {
-                    // Setelah semua langkah selesai, tambahkan panah ke garis terakhir
-                    if (lastLine) {
-                         lastLine.setAttribute('marker-end', arrowId);
-                    }
+                    // Setelah semua langkah selesai, tambahkan panah ke garis penuh
+                    jumpPath.setAttribute('marker-end', arrowId);
                     resolve();
                     return;
-                }
-                
-                // Pastikan panah dihapus dari garis sebelumnya
-                if (lastLine && lastLine.getAttribute('marker-end')) {
-                    lastLine.removeAttribute('marker-end');
                 }
                 
                 const prevPixel = currentUnit * UNIT_LENGTH;
                 currentUnit += direction;
                 const nextPixel = currentUnit * UNIT_LENGTH;
+                
+                const currentStepLength = UNIT_LENGTH; // Panjang satu langkah
 
-                // 2. Gambar Garis Langkah (Tercipta Bersamaan dengan Token)
-                const line = createSVGElement('line', {
-                    x1: prevPixel, y1: CENTER_Y + labelYOffset,
-                    x2: nextPixel, y2: CENTER_Y + labelYOffset,
-                    class: colorClass, 
-                    'stroke-dasharray': '8, 4', 
-                    'stroke-width': 4,
-                    'stroke-opacity': 1, 
-                });
-                svg.appendChild(line);
-                lastLine = line;
-
-                // 3. Gambar Bulatan Bergerak (TOKEN)
+                // 2. Gambar Bulatan Bergerak (TOKEN)
                 const dot = createSVGElement('circle', {
                     cx: prevPixel, 
                     cy: CENTER_Y + labelYOffset,
@@ -174,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 svg.appendChild(dot);
                 
-                // 4. Animasi pergerakan token
-                dot.animate(
+                // 3. Animasi pergerakan token
+                const tokenAnimation = dot.animate(
                     [{ cx: prevPixel }, { cx: nextPixel }],
                     { 
                         duration: ANIMATION_DURATION, // Waktu Gerak
@@ -183,6 +179,31 @@ document.addEventListener('DOMContentLoaded', () => {
                         fill: 'forwards' 
                     }
                 );
+
+                // 4. Animasi Garis (STROKE-DASHOFFSET)
+                // Ini akan "menggambar" sebagian garis seiring token bergerak
+                const targetDashOffset = totalLineLength - (animatedLineLength + currentStepLength);
+                if (direction < 0) { // Jika bergerak ke kiri, offset harus berbalik
+                    // Untuk gerakan ke kiri, stroke-dashoffset dimulai dari 0 dan bertambah
+                    // Ini lebih kompleks dengan orientasi auto-start-reverse.
+                    // Untuk sederhana, kita akan biarkan seperti ini dan terima offset dari kiri
+                    // Atau kita bisa membalik `stroke-dasharray` dan `stroke-dashoffset`
+                    // Jika `orient: auto-start-reverse` tidak cukup
+                }
+
+
+                jumpPath.animate(
+                    [{ 'stroke-dashoffset': totalLineLength - animatedLineLength }],
+                    [{ 'stroke-dashoffset': targetDashOffset }]
+                    ,
+                    { 
+                        duration: ANIMATION_DURATION, 
+                        easing: 'linear', 
+                        fill: 'forwards' 
+                    }
+                );
+
+                animatedLineLength += currentStepLength; // Perbarui panjang garis yang sudah tergambar
 
                 // 5. Logika Berhenti dan Jeda
                 setTimeout(() => {
