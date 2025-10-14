@@ -9,7 +9,7 @@ body {
 }
 
 .main-container {
-    background: #ffffff;
+    background: #e0f2f7; /* Soft Blue untuk container utama */
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -31,6 +31,19 @@ h1 {
     margin-bottom: 20px;
 }
 
+.input-group {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+.input-group label {
+    font-size: 0.9em;
+    color: #4a0dad;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
 .input-bilangan, .result-box {
     padding: 10px 15px;
     border: 2px solid #a3b3ff;
@@ -38,6 +51,7 @@ h1 {
     width: 80px;
     font-size: 1.2em;
     text-align: center;
+    background: #fdfdff; 
 }
 
 .result-box {
@@ -86,12 +100,11 @@ h1 {
     transform: translateY(-2px);
 }
 
-/* Area Visualisasi SVG */
 .visualization-area {
     border: 2px solid #a3b3ff;
     border-radius: 15px;
     padding: 10px;
-    background: #ffffff;
+    background: #ffffff; 
 }
 
 /* Style untuk elemen SVG */
@@ -110,14 +123,16 @@ h1 {
     fill: #333;
 }
 
+/* WARNA: Merah */
 .jump-line-A {
-    stroke: #ff99c8; /* Pink Pastel */
+    stroke: #ff5757; 
     stroke-width: 4;
     stroke-dasharray: 8, 4;
 }
 
+/* WARNA: Hijau */
 .jump-line-B {
-    stroke: #a9e0f6; /* Biru Muda Pastel */
+    stroke: #4caf50; 
     stroke-width: 4;
     stroke-dasharray: 8, 4;
 }
@@ -132,4 +147,9 @@ h1 {
 .label-text {
     font-size: 16px;
     font-weight: bold;
+}
+
+/* DEFENISI MARKER PANAH */
+.arrowhead {
+    fill: currentColor; 
 }
