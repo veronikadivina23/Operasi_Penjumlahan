@@ -1,92 +1,116 @@
 const canvas = document.getElementById("garisBilangan");
 const ctx = canvas.getContext("2d");
-const centerX = canvas.width / 2;
-const scale = 25;
-const maxNum = 15;
-const viewRange = 10;
 
-function gambarGaris() {
+const bil1Input = document.getElementById("bil1");
+const bil2Input = document.getElementById("bil2");
+const hasilBox = document.getElementById("hasil");
+const tombolMulai = document.getElementById("mulai");
+const tombolRefresh = document.getElementById("refresh");
+
+tombolMulai.addEventListener("click", mulaiOperasi);
+tombolRefresh.addEventListener("click", refreshGambar);
+
+// Fungsi menggambar garis bilangan
+function gambarGarisBilangan() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   ctx.beginPath();
-  ctx.moveTo(50, 120);
-  ctx.lineTo(750, 120);
+  ctx.moveTo(50, 100);
+  ctx.lineTo(950, 100);
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  for (let i = -maxNum; i <= maxNum; i++) {
-    const x = centerX + i * scale;
-    ctx.beginPath();
-    ctx.moveTo(x, 115);
-    ctx.lineTo(x, 125);
-    ctx.stroke();
-    if (i >= -viewRange && i <= viewRange) {
+  // Titik dan angka dari -15 sampai 15 (tampil -10 s.d 10 di tengah)
+  for (let i = -15; i <= 15; i++) {
+    const x = 500 + i * 30;
+    if (x >= 50 && x <= 950) {
+      ctx.beginPath();
+      ctx.moveTo(x, 95);
+      ctx.lineTo(x, 105);
+      ctx.stroke();
+
       ctx.fillStyle = "blue";
-      ctx.font = "14px Poppins";
-      ctx.fillText(i, x - 5, 140);
+      ctx.font = "14px Arial";
+      ctx.fillText(i, x - 6, 120);
     }
   }
+
+  // Titik 0 (lebih tebal)
+  ctx.beginPath();
+  ctx.moveTo(500, 90);
+  ctx.lineTo(500, 110);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "black";
+  ctx.stroke();
 }
 
-function animasiLompatan(x1, x2, warna, label, callback) {
-  let progress = 0;
-  const langkah = () => {
-    gambarGaris();
+function mulaiOperasi() {
+  const bil1 = parseInt(bil1Input.value);
+  const bil2 = parseInt(bil2Input.value);
 
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    ctx.moveTo(x1, 100);
-    ctx.lineTo(x1 + (x2 - x1) * progress, 100);
-    ctx.strokeStyle = warna;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.setLineDash([]);
+  if (isNaN(bil1) || isNaN(bil2)) {
+    alert("Silakan isi kedua bilangan terlebih dahulu!");
+    return;
+  }
 
-    const posX = x1 + (x2 - x1) * progress;
-    const posY = 100 - Math.sin(progress * Math.PI) * 30;
-    ctx.beginPath();
-    ctx.arc(posX, posY, 8, 0, 2 * Math.PI);
-    ctx.fillStyle = warna;
-    ctx.fill();
-
-    ctx.fillStyle = warna;
-    ctx.font = "14px Poppins";
-    ctx.fillText(label, (x1 + x2) / 2, 80);
-
-    if (progress < 1) {
-      progress += 0.02;
-      requestAnimationFrame(langkah);
-    } else if (callback) {
-      callback();
-    }
-  };
-  langkah();
-}
-
-function mulai() {
-  gambarGaris();
-  const bil1 = parseInt(document.getElementById("bil1").value);
-  const bil2 = parseInt(document.getElementById("bil2").value);
   const hasil = bil1 + bil2;
 
-  const startX = centerX;
-  const pos1 = startX + bil1 * scale;
-  const posHasil = startX + hasil * scale;
+  gambarGarisBilangan();
 
-  // animasi bilangan pertama (kuning)
-  animasiLompatan(startX, pos1, "gold", bil1, () => {
-    // animasi bilangan kedua (hijau)
-    animasiLompatan(pos1, posHasil, "green", bil2, () => {
-      // titik hasil (merah)
-      ctx.beginPath();
-      ctx.arc(posHasil, 120, 10, 0, 2 * Math.PI);
-      ctx.fillStyle = "red";
-      ctx.fill();
+  // Bola kuning untuk bilangan pertama
+  const startX = 500 + bil1 * 30;
+  ctx.beginPath();
+  ctx.arc(startX, 100, 7, 0, Math.PI * 2);
+  ctx.fillStyle = "yellow";
+  ctx.fill();
 
-      document.getElementById("hasil").innerText = `${bil1} + ${bil2} = ${hasil}`;
-    });
-  });
+  // Garis & panah bilangan pertama (dari 0 ke bil1)
+  ctx.beginPath();
+  ctx.setLineDash([5, 5]);
+  ctx.moveTo(500, 80);
+  ctx.lineTo(startX, 80);
+  ctx.strokeStyle = "orange";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "orange";
+  ctx.fillText(bil1, (500 + startX) / 2, 70);
+
+  // Bola hijau untuk bilangan kedua
+  const endX = startX + bil2 * 30;
+  ctx.beginPath();
+  ctx.arc(endX, 100, 7, 0, Math.PI * 2);
+  ctx.fillStyle = "green";
+  ctx.fill();
+
+  // Garis & panah bilangan kedua
+  ctx.beginPath();
+  ctx.setLineDash([5, 5]);
+  ctx.moveTo(startX, 80);
+  ctx.lineTo(endX, 80);
+  ctx.strokeStyle = "green";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "green";
+  ctx.fillText(bil2, (startX + endX) / 2, 70);
+
+  // Titik merah hasil
+  ctx.beginPath();
+  ctx.arc(endX, 100, 9, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
+
+  hasilBox.textContent = `${bil1} + ${bil2} = ${hasil}`;
 }
 
-document.getElementById("mulaiBtn").addEventListener("click", mulai);
-gambarGaris();
+function refreshGambar() {
+  bil1Input.value = "";
+  bil2Input.value = "";
+  hasilBox.textContent = "";
+  gambarGarisBilangan();
+}
+
+// gambar awal (garis bilangan langsung muncul)
+gambarGarisBilangan();
