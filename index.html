@@ -1,27 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Operasi Penjumlahan Bilangan Bulat</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Operasi Penjumlahan Bilangan Bulat</h1>
-  <div class="input-area">
-    <input id="num1" type="number" placeholder="Bilangan 1" min="-10" max="10" />
-    <span class="highlight"> + </span>
-    <input id="num2" type="number" placeholder="Bilangan 2" min="-10" max="10" />
-    <button id="startBtn">Mulai</button>
-    <button id="resetBtn">Refresh</button>
-  </div>
+  <div class="container">
+    <h1>Operasi Penjumlahan Bilangan Bulat</h1>
 
-  <div class="number-line-container">
-    <canvas id="numberLine" width="900" height="200"></canvas>
-  </div>
+    <div class="input-section">
+      <div class="input-group">
+        <label>Bilangan 1:</label>
+        <input type="number" id="num1" min="-10" max="10">
+      </div>
+      <span class="plus">+</span>
+      <div class="input-group">
+        <label>Bilangan 2:</label>
+        <input type="number" id="num2" min="-10" max="10">
+      </div>
+      <button id="startBtn">Mulai</button>
+      <button id="resetBtn">Refresh</button>
+    </div>
 
-  <div class="result-box">
-    Bilangan 1 + Bilangan 2 = <span id="result"></span>
+    <canvas id="numberLine" width="1000" height="250"></canvas>
+
+    <div class="result-box">
+      <span>Bilangan 1 + Bilangan 2 = </span><input type="text" id="result" readonly>
+    </div>
+
+    <div class="info">
+      <p>🌟 <b>Angka Pertama</b><br>
+      Menentukan titik awal pada garis bilangan.<br>
+      • Jika positif (+), bergerak ke kanan dari 0<br>
+      • Jika negatif (-), bergerak ke kiri dari 0</p>
+
+      <p>💜 <b>Angka Kedua</b><br>
+      Menentukan langkah berikutnya:<br>
+      • Jika positif (+), bergerak ke kanan dari angka pertama<br>
+      • Jika negatif (-), bergerak ke kiri dari angka pertama</p>
+    </div>
   </div>
 
   <script src="script.js"></script>
