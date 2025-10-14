@@ -1,88 +1,135 @@
 body {
-  background: linear-gradient(to bottom right, #2ecc71, #3498db);
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  color: #fff;
-  text-align: center;
-  margin: 0;
-  padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: #eef2ff; /* Latar belakang ungu muda */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
 
-.container {
-  margin-top: 30px;
+.main-container {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
 }
 
 h1 {
-  font-size: 32px;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-  margin-bottom: 20px;
+    color: #6a0dad; /* Ungu gelap */
+    margin-bottom: 25px;
 }
 
-.input-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+.controls-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-.input-group label {
-  display: block;
-  font-weight: bold;
-}
-
-input[type="number"] {
-  width: 70px;
-  padding: 5px;
-  font-size: 18px;
-  border-radius: 8px;
-  border: 2px solid #fff;
-  text-align: center;
-  background-color: #f1f8e9;
-  color: #333;
-}
-
-.plus {
-  font-size: 36px;
-  font-weight: bold;
-  color: #ffeb3b;
-  text-shadow: 0 0 10px #000;
-}
-
-button {
-  padding: 8px 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #333;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background-color: #ffe082;
-}
-
-canvas {
-  background: #fefefe;
-  border-radius: 15px;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+.input-bilangan, .result-box {
+    padding: 10px 15px;
+    border: 2px solid #a3b3ff;
+    border-radius: 10px;
+    width: 80px;
+    font-size: 1.2em;
+    text-align: center;
 }
 
 .result-box {
-  margin-top: 15px;
+    background: #f0f8ff;
+    font-weight: bold;
+    color: #333;
 }
 
-.result-box input {
-  width: 100px;
-  text-align: center;
-  font-size: 26px;
-  border-radius: 10px;
-  border: 3px solid #fff;
-  padding: 10px;
-  background-color: #fff;
-  color: #e74c3c;
-  font-weight: bold;
-  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+.operator-fixed, .equals-sign {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #6a0dad;
+}
+
+.actions {
+    margin-bottom: 30px;
+}
+
+.btn-action {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.primary {
+    background: #6a0dad;
+    color: white;
+}
+
+.primary:hover {
+    background: #4a0090;
+    transform: translateY(-2px);
+}
+
+.secondary {
+    background: #dcdcdc;
+    color: #333;
+}
+
+.secondary:hover {
+    background: #c0c0c0;
+    transform: translateY(-2px);
+}
+
+/* Area Visualisasi SVG */
+.visualization-area {
+    border: 2px solid #a3b3ff;
+    border-radius: 15px;
+    padding: 10px;
+    background: #ffffff;
+}
+
+/* Style untuk elemen SVG */
+.number-line {
+    stroke: #6a0dad;
+    stroke-width: 3;
+}
+
+.tick-line {
+    stroke: #6a0dad;
+    stroke-width: 1;
+}
+
+.tick-label {
+    font-size: 14px;
+    fill: #333;
+}
+
+.jump-line-A {
+    stroke: #ff99c8; /* Pink Pastel */
+    stroke-width: 4;
+    stroke-dasharray: 8, 4;
+}
+
+.jump-line-B {
+    stroke: #a9e0f6; /* Biru Muda Pastel */
+    stroke-width: 4;
+    stroke-dasharray: 8, 4;
+}
+
+.result-dot {
+    fill: #6a0dad;
+    stroke: #ffd700;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 5px #ffd700);
+}
+
+.label-text {
+    font-size: 16px;
+    font-weight: bold;
 }
