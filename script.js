@@ -1,97 +1,92 @@
-const num1Input = document.getElementById("num1");
-const num2Input = document.getElementById("num2");
-const numberLine = document.getElementById("numberLine");
-const resultBox = document.getElementById("resultBox");
-const startBtn = document.getElementById("startBtn");
-const resetBtn = document.getElementById("resetBtn");
+const canvas = document.getElementById("garisBilangan");
+const ctx = canvas.getContext("2d");
+const centerX = canvas.width / 2;
+const scale = 25;
+const maxNum = 15;
+const viewRange = 10;
 
-const min = -15, max = 15;
-const visibleMin = -10, visibleMax = 10;
-const width = 600;
+function gambarGaris() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
+  ctx.moveTo(50, 120);
+  ctx.lineTo(750, 120);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2;
+  ctx.stroke();
 
-function scaleX(n) {
-  return ((n - visibleMin) / (visibleMax - visibleMin)) * width;
+  for (let i = -maxNum; i <= maxNum; i++) {
+    const x = centerX + i * scale;
+    ctx.beginPath();
+    ctx.moveTo(x, 115);
+    ctx.lineTo(x, 125);
+    ctx.stroke();
+    if (i >= -viewRange && i <= viewRange) {
+      ctx.fillStyle = "blue";
+      ctx.font = "14px Poppins";
+      ctx.fillText(i, x - 5, 140);
+    }
+  }
 }
 
-// Buat angka di garis bilangan
-for (let n = visibleMin; n <= visibleMax; n++) {
-  const tick = document.createElement("div");
-  tick.className = "tick";
-  tick.style.left = scaleX(n) + "px";
-  tick.innerHTML = n;
-  numberLine.appendChild(tick);
-}
-
-// Buat bola
-const ball1 = document.createElement("div");
-ball1.className = "ball yellow";
-const ball2 = document.createElement("div");
-ball2.className = "ball green";
-const ballResult = document.createElement("div");
-ballResult.className = "ball red";
-numberLine.appendChild(ball1);
-numberLine.appendChild(ball2);
-numberLine.appendChild(ballResult);
-
-const line1 = document.getElementById("line1");
-const line2 = document.getElementById("line2");
-
-// Fungsi animasi garis (panah)
-function animateLine(line, start, end, color, callback) {
+function animasiLompatan(x1, x2, warna, label, callback) {
   let progress = 0;
-  const step = () => {
-    progress += 0.02;
-    if (progress > 1) progress = 1;
-    const currentX = start + (end - start) * progress;
-    line.setAttribute("x1", start);
-    line.setAttribute("x2", currentX);
-    if (progress < 1) requestAnimationFrame(step);
-    else if (callback) callback();
+  const langkah = () => {
+    gambarGaris();
+
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(x1, 100);
+    ctx.lineTo(x1 + (x2 - x1) * progress, 100);
+    ctx.strokeStyle = warna;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const posX = x1 + (x2 - x1) * progress;
+    const posY = 100 - Math.sin(progress * Math.PI) * 30;
+    ctx.beginPath();
+    ctx.arc(posX, posY, 8, 0, 2 * Math.PI);
+    ctx.fillStyle = warna;
+    ctx.fill();
+
+    ctx.fillStyle = warna;
+    ctx.font = "14px Poppins";
+    ctx.fillText(label, (x1 + x2) / 2, 80);
+
+    if (progress < 1) {
+      progress += 0.02;
+      requestAnimationFrame(langkah);
+    } else if (callback) {
+      callback();
+    }
   };
-  line.setAttribute("stroke", color);
-  line.setAttribute("x1", start);
-  line.setAttribute("x2", start);
-  requestAnimationFrame(step);
+  langkah();
 }
 
-function resetAll() {
-  const x0 = scaleX(0);
-  ball1.style.left = x0 + "px";
-  ball2.style.left = x0 + "px";
-  ballResult.style.left = x0 + "px";
-  line1.setAttribute("x1", x0);
-  line1.setAttribute("x2", x0);
-  line2.setAttribute("x1", x0);
-  line2.setAttribute("x2", x0);
-  resultBox.textContent = "Bilangan 1 + Bilangan 2 = 0";
-}
+function mulai() {
+  gambarGaris();
+  const bil1 = parseInt(document.getElementById("bil1").value);
+  const bil2 = parseInt(document.getElementById("bil2").value);
+  const hasil = bil1 + bil2;
 
-function startAnimation() {
-  const num1 = parseInt(num1Input.value) || 0;
-  const num2 = parseInt(num2Input.value) || 0;
-  const result = num1 + num2;
+  const startX = centerX;
+  const pos1 = startX + bil1 * scale;
+  const posHasil = startX + hasil * scale;
 
-  const x0 = scaleX(0);
-  const x1 = scaleX(num1);
-  const x2 = scaleX(result);
+  // animasi bilangan pertama (kuning)
+  animasiLompatan(startX, pos1, "gold", bil1, () => {
+    // animasi bilangan kedua (hijau)
+    animasiLompatan(pos1, posHasil, "green", bil2, () => {
+      // titik hasil (merah)
+      ctx.beginPath();
+      ctx.arc(posHasil, 120, 10, 0, 2 * Math.PI);
+      ctx.fillStyle = "red";
+      ctx.fill();
 
-  // Reset dulu posisi
-  resetAll();
-
-  // Jalankan animasi
-  animateLine(line1, x0, x1, "yellow", () => {
-    ball1.style.left = x1 + "px";
-    animateLine(line2, x1, x2, "limegreen", () => {
-      ball2.style.left = x2 + "px";
-      ballResult.style.left = x2 + "px";
-      resultBox.textContent = `Bilangan 1 + Bilangan 2 = ${result}`;
+      document.getElementById("hasil").innerText = `${bil1} + ${bil2} = ${hasil}`;
     });
   });
 }
 
-// Tombol
-startBtn.addEventListener("click", startAnimation);
-resetBtn.addEventListener("click", resetAll);
-
-// Inisialisasi awal
-resetAll();
+document.getElementById("mulaiBtn").addEventListener("click", mulai);
+gambarGaris();
