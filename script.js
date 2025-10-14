@@ -1,142 +1,123 @@
 const canvas = document.getElementById("numberLine");
 const ctx = canvas.getContext("2d");
-
 const startBtn = document.getElementById("startBtn");
 const resetBtn = document.getElementById("resetBtn");
-const resultDisplay = document.getElementById("result");
-const num1Input = document.getElementById("num1");
-const num2Input = document.getElementById("num2");
+const resultInput = document.getElementById("result");
 
-let num1 = null, num2 = null, result = null;
-let offset = 0;
+let num1Input = document.getElementById("num1");
+let num2Input = document.getElementById("num2");
 
-function drawLine() {
+function drawNumberLine(center = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const centerX = canvas.width / 2 + offset;
   const step = 40;
+  const visibleRange = 10;
+  const zeroX = canvas.width / 2 - center * step;
 
+  // Garis utama
+  ctx.beginPath();
+  ctx.moveTo(50, 130);
+  ctx.lineTo(canvas.width - 50, 130);
   ctx.strokeStyle = "black";
   ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(0, 100);
-  ctx.lineTo(canvas.width, 100);
   ctx.stroke();
 
-  // tanda tiap bilangan
-  ctx.font = "16px Poppins";
-  ctx.textAlign = "center";
-  for (let i = -10; i <= 10; i++) {
-    const x = centerX + i * step;
+  // Tanda dan angka
+  for (let i = -visibleRange; i <= visibleRange; i++) {
+    const x = zeroX + i * step;
     ctx.beginPath();
-    ctx.moveTo(x, 95);
-    ctx.lineTo(x, 105);
+    ctx.moveTo(x, 125);
+    ctx.lineTo(x, 135);
     ctx.stroke();
+
     ctx.fillStyle = "black";
-    ctx.fillText(i, x, 125);
+    ctx.font = "14px Poppins";
+    ctx.fillText(i + center, x - 5, 150);
   }
 
-  // nol selalu terlihat
-  const zeroX = centerX;
+  // Panah kiri dan kanan
   ctx.beginPath();
-  ctx.moveTo(zeroX, 90);
-  ctx.lineTo(zeroX, 110);
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 2;
-  ctx.stroke();
+  ctx.moveTo(canvas.width - 60, 130);
+  ctx.lineTo(canvas.width - 50, 125);
+  ctx.lineTo(canvas.width - 50, 135);
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(60, 130);
+  ctx.lineTo(50, 125);
+  ctx.lineTo(50, 135);
+  ctx.fill();
 }
 
-function drawArrow(from, to, color, label) {
+function drawDashedArrow(from, to, color, label) {
   const step = 40;
-  const baseY = 100;
-  const height = 50;
+  const zeroX = canvas.width / 2;
+  const y = 90;
 
-  ctx.setLineDash([6, 5]);
   ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
   ctx.beginPath();
-  ctx.moveTo(from, baseY);
-  ctx.lineTo(to, baseY - height);
+  ctx.moveTo(zeroX + from * step, y);
+  ctx.lineTo(zeroX + to * step, y);
   ctx.stroke();
-
-  // panah
-  const arrowSize = 10;
-  ctx.beginPath();
-  if (to > from) {
-    ctx.moveTo(to - arrowSize, baseY - height - arrowSize / 2);
-    ctx.lineTo(to, baseY - height);
-    ctx.lineTo(to - arrowSize, baseY - height + arrowSize / 2);
-  } else {
-    ctx.moveTo(to + arrowSize, baseY - height - arrowSize / 2);
-    ctx.lineTo(to, baseY - height);
-    ctx.lineTo(to + arrowSize, baseY - height + arrowSize / 2);
-  }
-  ctx.stroke();
-
-  // label
   ctx.setLineDash([]);
+
+  // Panah di ujung
+  const arrowDir = to > from ? 1 : -1;
+  ctx.beginPath();
+  ctx.moveTo(zeroX + to * step, y);
+  ctx.lineTo(zeroX + to * step - 8 * arrowDir, y - 5);
+  ctx.lineTo(zeroX + to * step - 8 * arrowDir, y + 5);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  // Label di atas garis
   ctx.fillStyle = color;
   ctx.font = "16px Poppins";
-  ctx.textAlign = "center";
-  ctx.fillText(label, (from + to) / 2, baseY - height - 10);
+  ctx.fillText(label, zeroX + ((from + to) / 2) * step - 5, y - 10);
 }
 
-function drawBall(position, color) {
-  const baseY = 100;
+function drawCircle(value, color) {
   const step = 40;
-  const centerX = canvas.width / 2 + offset;
-  const x = centerX + position * step;
-
+  const zeroX = canvas.width / 2;
   ctx.beginPath();
-  ctx.arc(x, baseY, 8, 0, 2 * Math.PI);
+  ctx.arc(zeroX + value * step, 130, 5, 0, Math.PI * 2);
   ctx.fillStyle = color;
   ctx.fill();
 }
 
-function start() {
-  num1 = parseInt(num1Input.value);
-  num2 = parseInt(num2Input.value);
+function update() {
+  const num1 = parseInt(num1Input.value);
+  const num2 = parseInt(num2Input.value);
+  if (isNaN(num1) || isNaN(num2)) return;
 
-  if (isNaN(num1) || isNaN(num2)) {
-    alert("Masukkan kedua bilangan terlebih dahulu (antara -10 hingga 10)!");
-    return;
-  }
+  const result = num1 + num2;
+  resultInput.value = result;
 
-  result = num1 + num2;
-  resultDisplay.textContent = `${num1} + ${num2} = ${result}`;
+  let center = 0;
+  if (result > 10) center = result - 10;
+  else if (result < -10) center = result + 10;
 
-  // perhitungan pergeseran
-  const step = 40;
-  const baseVisibleRange = 10;
-  if (result > baseVisibleRange - 2) offset = -(result - (baseVisibleRange - 2)) * step;
-  else if (result < -(baseVisibleRange - 2)) offset = -(result + (baseVisibleRange - 2)) * step;
-  else offset = 0;
+  drawNumberLine(center);
 
-  // gambar ulang
-  drawLine();
-  const centerX = canvas.width / 2 + offset;
-  const stepSize = 40;
+  // Bilangan pertama
+  drawDashedArrow(0, num1, "gold", num1);
+  drawCircle(num1, "gold");
 
-  // titik bilangan 1
-  const startX = centerX;
-  const endX1 = centerX + num1 * stepSize;
-  drawArrow(startX, endX1, "blue", num1);
-  drawBall(num1, "blue");
+  // Bilangan kedua (tetap di atas bilangan pertama)
+  drawDashedArrow(num1, num1 + num2, "limegreen", num2);
+  drawCircle(num1 + num2, "limegreen");
 
-  // titik bilangan 2
-  const startX2 = endX1;
-  const endX2 = endX1 + num2 * stepSize;
-  drawArrow(startX2, endX2, "green", num2);
-  drawBall(num2 + num1, "red");
+  // Hasil
+  drawCircle(result, "red");
 }
 
-function reset() {
+startBtn.onclick = update;
+resetBtn.onclick = () => {
   num1Input.value = "";
   num2Input.value = "";
-  resultDisplay.textContent = "";
-  offset = 0;
-  drawLine();
-}
+  resultInput.value = "";
+  drawNumberLine(0);
+};
 
-startBtn.addEventListener("click", start);
-resetBtn.addEventListener("click", reset);
-drawLine();
+drawNumberLine(0);
