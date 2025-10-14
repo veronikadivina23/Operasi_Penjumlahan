@@ -1,67 +1,103 @@
 body {
+  background-color: #3b82f6;
+  font-family: Arial, sans-serif;
   text-align: center;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  background: linear-gradient(to bottom, #c3f0f9, #f6f9d4);
-  color: #333;
+  color: white;
+  margin: 0;
+  padding: 20px;
 }
 
-h2 {
-  background-color: #ffb6c1;
-  display: inline-block;
-  padding: 10px 20px;
-  border-radius: 15px;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
 }
 
-#input-container {
+.input-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
+  gap: 16px;
+  margin-bottom: 30px;
 }
 
-.number-input {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 10px;
-}
-
-.operation {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0 5px;
-}
-
-#button-container {
-  margin: 10px;
-}
-
-button {
-  padding: 10px 20px;
+input[type="number"] {
+  width: 80px;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 8px;
   border: none;
-  background-color: #ffd700;
-  border-radius: 10px;
+  text-align: center;
+}
+
+.plus {
+  font-size: 30px;
   font-weight: bold;
-  cursor: pointer;
-  margin: 0 10px;
-  box-shadow: 1px 2px 5px rgba(0,0,0,0.2);
 }
 
-button:hover {
-  background-color: #ffeb3b;
+.number-line {
+  position: relative;
+  width: 600px;
+  height: 150px;
+  margin: 0 auto 20px;
+  border-top: 4px solid black;
+  overflow: hidden;
 }
 
-#container {
-  margin-top: 15px;
+.tick {
+  position: absolute;
+  top: 0;
+  text-align: center;
+  font-size: 12px;
+  transform: translateX(-50%);
 }
 
-#result-box {
-  margin-top: 15px;
-  font-size: 20px;
-  background: #fff8b7;
+.tick::before {
+  content: '|';
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ball {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: bounce 0.6s ease infinite alternate;
+}
+
+@keyframes bounce {
+  0% { transform: translate(-50%, 0); }
+  100% { transform: translate(-50%, -15px); }
+}
+
+.yellow { background: yellow; top: 30px; }
+.green { background: limegreen; top: 30px; animation-delay: 0.2s; }
+.red { background: red; top: 90px; border: 2px solid white; animation: none; }
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.result-box {
+  background: white;
+  color: black;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 8px;
   display: inline-block;
-  padding: 10px 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  margin-bottom: 20px;
+}
+
+.explanation {
+  background: white;
+  color: black;
+  border-radius: 8px;
+  max-width: 400px;
+  padding: 15px;
+  margin: 0 auto;
+  font-size: 14px;
+  text-align: left;
 }
