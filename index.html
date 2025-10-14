@@ -13,9 +13,17 @@
         </header>
         
         <div class="controls-panel">
-            <input type="number" id="inputA" value="3" class="input-bilangan">
+            <div class="input-group">
+                <label for="inputA">Bilangan Pertama</label>
+                <input type="number" id="inputA" value="" placeholder="Cth: 3" min="-15" max="15" class="input-bilangan">
+            </div>
+            
             <span class="operator-fixed">+</span>
-            <input type="number" id="inputB" value="-5" class="input-bilangan">
+            
+            <div class="input-group">
+                <label for="inputB">Bilangan Kedua</label>
+                <input type="number" id="inputB" value="" placeholder="Cth: -5" min="-15" max="15" class="input-bilangan">
+            </div>
             
             <span class="equals-sign">=</span>
             
@@ -23,7 +31,7 @@
         </div>
         
         <div class="actions">
-            <button id="startButton" class="btn-action primary">▶️ Mulai Lompatan</button>
+            <button id="startButton" class="btn-action primary">▶️ Mulai</button>
             <button id="refreshButton" class="btn-action secondary">🔄 Ulangi</button>
         </div>
 
