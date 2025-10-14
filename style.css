@@ -17,7 +17,7 @@ h1 {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 input[type="number"] {
@@ -32,6 +32,28 @@ input[type="number"] {
 .plus {
   font-size: 30px;
   font-weight: bold;
+}
+
+.button-container {
+  margin-bottom: 25px;
+}
+
+button {
+  background: white;
+  color: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background: #1d4ed8;
+  color: white;
 }
 
 .number-line {
