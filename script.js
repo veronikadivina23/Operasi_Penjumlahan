@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const CENTER_Y = SVG_HEIGHT / 2;
     const UNIT_LENGTH = 40; 
     
-    // Waktu Gerak Token dari Angka X ke Angka Y
-    const ANIMATION_DURATION = 180; 
+    // Waktu Gerak Token (DIPERLAMBAT untuk visibilitas)
+    const ANIMATION_DURATION = 250; 
     
-    // Waktu Berhenti (JEDA) di setiap Angka
-    const PAUSE_PER_STEP = 120; 
+    // Waktu Berhenti (DIPERLAMBAT untuk visibilitas)
+    const PAUSE_PER_STEP = 150; 
     
     // JEDA ANTARA ANIMASI A DAN B
-    const PAUSE_BETWEEN_JUMPS = 500; 
+    const PAUSE_BETWEEN_JUMPS = 600; 
     
     const COLOR_A = '#ff5757'; // Merah
     const COLOR_B = '#4caf50'; // Hijau
@@ -142,6 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     resolve();
                     return;
+                }
+                
+                // Pastikan panah dihapus dari garis sebelumnya
+                if (lastLine && lastLine.getAttribute('marker-end')) {
+                    lastLine.removeAttribute('marker-end');
                 }
                 
                 const prevPixel = currentUnit * UNIT_LENGTH;
