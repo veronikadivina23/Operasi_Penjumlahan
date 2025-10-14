@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Operasi Penjumlahan Bilangan Bulat</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lompatan Bilangan Bulat Interaktif</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-  <div class="container">
-    <h1>🌟 Operasi Penjumlahan Bilangan Bulat 🌟</h1>
+    <div class="main-container">
+        <header>
+            <h1>🌟 Penjumlahan Bilangan Bulat Interaktif 🌟</h1>
+        </header>
+        
+        <div class="controls-panel">
+            <input type="number" id="inputA" value="3" class="input-bilangan">
+            <span class="operator-fixed">+</span>
+            <input type="number" id="inputB" value="-5" class="input-bilangan">
+            
+            <span class="equals-sign">=</span>
+            
+            <input type="text" id="resultC" readonly placeholder="Hasil" class="result-box">
+        </div>
+        
+        <div class="actions">
+            <button id="startButton" class="btn-action primary">▶️ Mulai Lompatan</button>
+            <button id="refreshButton" class="btn-action secondary">🔄 Ulangi</button>
+        </div>
 
-    <div class="input-section">
-      <div class="input-group">
-        <label>Bilangan 1:</label>
-        <input type="number" id="num1" min="-10" max="10">
-      </div>
-      <span class="plus">+</span>
-      <div class="input-group">
-        <label>Bilangan 2:</label>
-        <input type="number" id="num2" min="-10" max="10">
-      </div>
-      <button id="startBtn">Mulai</button>
-      <button id="resetBtn">Ulangi</button>
+        <div class="visualization-area">
+            <svg id="numberLineSVG" width="100%" height="300" viewBox="-150 -10 1000 300">
+                </svg>
+        </div>
     </div>
-
-    <canvas id="numberLine" width="1000" height="250"></canvas>
-
-    <div class="result-box">
-      <input type="text" id="result" readonly>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
